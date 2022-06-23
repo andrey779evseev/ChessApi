@@ -14,24 +14,18 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors();
+
 builder.Services.AddDbContext<ChessContext>(opt
     => opt.UseNpgsql("User ID = postgres;Password=c8tf6q95ddp7;Server=db.cjgjsrwxesxkebubhvua.supabase.co;Port=5432;Database=postgres;Integrated Security=true; Pooling=true;"));
 
-const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(myAllowSpecificOrigins,
-    policy =>
-    {
-        policy.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
 
 var app = builder.Build();
-app.UseCors(myAllowSpecificOrigins);
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 app.UseWebSockets();
 
 app.UseMiddleware<ChessWebSocketMiddleware>();
