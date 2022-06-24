@@ -115,7 +115,7 @@ public class GameController : ControllerBase
     public async Task<ActionResult> StopGame(StopGameRequestBodyType body)
     {
         await using var ctx = new ChessContext();
-        var game = await ctx.Games.FirstOrDefaultAsync(x => x.FirstOpponentId == body.FirstOpponentId && x.SecondOpponentId == body.SecondOpponentId);
+        var game = await ctx.Games.FirstOrDefaultAsync(x => x.FirstOpponentId == body.FirstOpponentId && x.SecondOpponentId == body.SecondOpponentId && x.Status == Game.GameStatus.InProgress);
         if (game == null)
             return NotFound();
         var winner = await ctx.Users.FirstOrDefaultAsync(x => x.Id == body.WinnerId);
